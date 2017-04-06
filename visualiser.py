@@ -3,7 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-refRets = [(130,60),(110,50),(90,50),(90,40)]
+#refRets = [(130,60),(110,50),(90,50),(90,40)]
+refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
+            [(-55,-25),(-55,25),(55,25),(55,-25)],
+            [(-45,-25),(-45,25),(45,25),(45,-25)],
+            [(-45,-20),(-45,20),(45,20),(45,-20)]]
 refP = [380, 320, 280, 260]
 refAngles = [80,-10,45,-45]
 
@@ -18,10 +22,6 @@ def linesLengths(poligon):
     for i in range(4):
         line = getLine(poligon,i)
         lengths[i] = length(line[0], line[1])
-    #lengths[0] = length(poligon[0], poligon[1])
-    #lengths[1] = length(poligon[1], poligon[2])
-    #lengths[2] = length(poligon[2], poligon[3])
-    #lengths[3] = length(poligon[3], poligon[0])
     return lengths
 
 def getAngle(line):
@@ -34,20 +34,19 @@ def getAngle(line):
     angle = angle * 180 / np.pi
     return angle;
 
-
-def rotateVector(angle):
+def rotateVector(angle, x0=1, y0=0):
     radAngle = float(angle)*np.pi/180
-    x = np.cos(radAngle) * 50;
-    y = np.sin(radAngle) * 50;
+    x = x0*np.cos(radAngle) - y0*np.sin(radAngle);
+    y = x0*np.sin(radAngle) + y0*np.cos(radAngle);
     return (x,y)
 
-def drawPoligons(img, poligons):
+def drawPoligons(img, poligons, color = (255,255,255)):
     #print poligons
     for poligon in poligons:
         #print "poligon: " + str(poligon)
         for i in range(4):
             line = getLine(poligon,i)
-            cv2.line(img, line[0], line[1], (255,0,0))
+            cv2.line(img, line[0], line[1], color)
         #cv2.imshow("hello", img)
         #cv2.waitKey()
         
@@ -56,6 +55,8 @@ def drawAngles(img, refLocalCentres, refLocalAngles):
         center = refLocalCentres[i]
         angle = refLocalAngles[i]
         vec = rotateVector(angle)
+        vec = (vec[0]*50, vec[1]*50)
+        print vec
         center = np.array(center).astype(int)
         vec = np.array(vec).astype(int)
         end = center+vec
@@ -83,6 +84,7 @@ for line in listFile:
     refPoligons = []
     refLocalAngles = []
     refLocalCentres = []
+    refLocalPoligons = []
     for i in range(number):
         offset = i*8;
         poligon = [(lineArr[offset+0], lineArr[offset+1]),
@@ -101,13 +103,25 @@ for line in listFile:
         
         refLocalAngles.append(qAngle)
         refLocalCentres.append(meanCoord)
-                
+        
+        perim = sum(lengths)
+        print perim
+        rectIndex = refP.index( min(refP, key=lambda x:abs(x-perim)) )
+        print rectIndex
+        refPoligon = refRects[rectIndex]
+        refPoligonTr = []
+        for point in refPoligon:
+            rotPoint = rotateVector(qAngle, point[0], point[1])
+            trPoint = (int(rotPoint[0]+meanCoord[0]),int(rotPoint[1]+meanCoord[1]))
+            refPoligonTr.append(trPoint)
+        refLocalPoligons.append(refPoligonTr)                
         
     poligons = poligons + localPoligons
         
     img = cv2.imread(inputDir + '/' + imgName)
-    drawPoligons(img, localPoligons)
+    drawPoligons(img, localPoligons, (255,0,0))
     drawAngles(img, refLocalCentres, refLocalAngles)
+    drawPoligons(img, refLocalPoligons)
     cv2.imshow('hello', img)
     cv2.waitKey()
     
