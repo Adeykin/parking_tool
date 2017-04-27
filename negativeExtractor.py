@@ -1,3 +1,7 @@
+"""
+Description: extract negative examples from images
+"""
+
 from shapely.geometry import Polygon
 import math
 import numpy as np
@@ -7,7 +11,8 @@ import os.path
 import random
 from matplotlib.testing.compare import crop_to_same
 
-#refRets = [(130,60),(110,50),(90,50),(90,40)]
+
+# cam 1
 refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
             [(-55,-25),(-55,25),(55,25),(55,-25)],
             [(-45,-25),(-45,25),(45,25),(45,-25)],
@@ -16,6 +21,17 @@ refOffsets = [(65,30),(55,25),(45,25),(45,20)]
     
 refP = [380, 320, 280, 260]
 refAngles = [80,-10,45,-45]
+
+"""
+#cam 2
+refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
+            [(-55,-25),(-55,25),(55,25),(55,-25)],
+            [(-45,-20),(-45,20),(45,20),(45,-20)]]
+refOffsets = [(65,30),(55,25),(45,20)]
+    
+refP = [380, 320, 260]
+refAngles = [-60,-30,30,60]
+"""
 
 def getLine(poligon, index):
     return [poligon[index], poligon[(index+1)%4]]
@@ -78,10 +94,15 @@ def extractCrop(img, poligonOld, size):
     return crop
 
 #===========================================================================================
-
+"""
+inputDir = "/home/adeykin/projects/parking/115000004/901000012"
+outputDir = "/home/adeykin/projects/parking/115000004/images/2/negative"
+listPath = "/home/adeykin/projects/parking/115000004/images/2/list.txt"
+"""
 inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
-outputDir = "/home/adeykin/projects/parking/115000004/images/1/negative"
+outputDir = "/home/adeykin/projects/parking/115000004/images/1/negativeExtend"
 listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
+
 
 listFile = open(listPath, 'r')
 
@@ -141,7 +162,7 @@ for line in listFile:
         shapelyPoligons.append(pol)
         
     #Generating random poligons
-    negativeNum = 100
+    negativeNum = 800
     outPoligon = [(0,0),
                   (img.shape[1],0),
                   (img.shape[1], img.shape[0]),

@@ -1,3 +1,10 @@
+"""
+Description: visualize marked data in windows
+Input: Images, list.txt
+Output: original poligons, approximated poligons, orientation estimation
+"""
+
+
 import math
 import numpy as np
 import matplotlib.pyplot as plt

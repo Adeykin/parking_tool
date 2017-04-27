@@ -1,3 +1,8 @@
+"""
+Description: extract positive examples from input images
+"""
+
+
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,7 +10,8 @@ import cv2
 import os.path
 from matplotlib.testing.compare import crop_to_same
 
-#refRets = [(130,60),(110,50),(90,50),(90,40)]
+"""
+# cam 1
 refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
             [(-55,-25),(-55,25),(55,25),(55,-25)],
             [(-45,-25),(-45,25),(45,25),(45,-25)],
@@ -14,6 +20,17 @@ refOffsets = [(65,30),(55,25),(45,25),(45,20)]
     
 refP = [380, 320, 280, 260]
 refAngles = [80,-10,45,-45]
+"""
+"""
+#cam 2
+refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
+            [(-55,-25),(-55,25),(55,25),(55,-25)],
+            [(-45,-20),(-45,20),(45,20),(45,-20)]]
+refOffsets = [(65,30),(55,25),(45,20)]
+    
+refP = [380, 320, 260]
+refAngles = [-60,-30,30,60]
+"""
 
 def getLine(poligon, index):
     return [poligon[index], poligon[(index+1)%4]]
@@ -82,6 +99,11 @@ inputDir = "/home/adeykin/projects/parking/115000004/901000012"
 outputDir = "/home/adeykin/projects/parking/115000004/images/2/marked"
 listPath = "/home/adeykin/projects/parking/115000004/images/2/list.txt"
 
+"""
+inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
+outputDir = "/home/adeykin/projects/parking/115000004/images/1/marked"
+listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
+"""
 listFile = open(listPath, 'r')
 
 poligons = []
