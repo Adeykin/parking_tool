@@ -1,33 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
-def getLine(poligon, index):
-    return [poligon[index], poligon[(index+1)%4]]
-
-def length(point0, point1):
-    return math.sqrt( math.pow(point0[0]-point1[0], 2) + math.pow(point0[1]-point1[1], 2) )
-
-def linesLengths(poligon):
-    lengths = range(4)
-    for i in range(4):
-        line = getLine(poligon,i)
-        lengths[i] = length(line[0], line[1])
-    #lengths[0] = length(poligon[0], poligon[1])
-    #lengths[1] = length(poligon[1], poligon[2])
-    #lengths[2] = length(poligon[2], poligon[3])
-    #lengths[3] = length(poligon[3], poligon[0])
-    return lengths
-
-def getAngle(line):
-    x = line[1][0] - line[0][0];
-    y = line[1][1] - line[0][1];
-    if y < 0:
-        x = -1 * x
-        y = -1 * y
-    angle = np.arctan( float(y)/x )
-    angle = angle * 180 / np.pi
-    return angle;
+import common
 
 print "hello"
 
@@ -67,14 +41,14 @@ mLongLine = []
 angles = []
 for poligon in poligons:
     #print poligon
-    lengths = linesLengths(poligon)
+    lengths = common.linesLengths(poligon)
     idx = sorted(range(len(lengths)),key=lengths.__getitem__)
     #print idx
     #print lengths
-    longLine1 = getLine(poligon, idx[2])
-    longLine2 = getLine(poligon, idx[3])
-    angle1 = getAngle(longLine1)
-    angle2 = getAngle(longLine2)
+    longLine1 = common.getLine(poligon, idx[2])
+    longLine2 = common.getLine(poligon, idx[3])
+    angle1 = common.getAngle(longLine1)
+    angle2 = common.getAngle(longLine2)
     angles.append(np.mean([angle1,angle2]))
     #angles.append(angle1)
     #angles.append(angle2)
