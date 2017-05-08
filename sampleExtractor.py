@@ -12,33 +12,6 @@ import common
 import markParser
 #from detector import trPoligon
 
-# cam 1
-
-refRects = [np.asarray([(-65,-30),(-65,30),(65,30),(65,-30)]),
-            np.asarray([(-55,-25),(-55,25),(55,25),(55,-25)]),
-            np.asarray([(-45,-25),(-45,25),(45,25),(45,-25)]),
-            np.asarray([(-45,-20),(-45,20),(45,20),(45,-20)])]
-"""
-refRects = [np.asarray([(-30,-65),(-30,65),(30,65),(30,-65)]),
-            np.asarray([(-25,-55),(-25,55),(25,55),(25,-55)]),
-            np.asarray([(-25,-45),(-25,45),(25,45),(25,-45)]),
-            np.asarray([(-25,-40),(-25,40),(25,40),(25,-40)])]
-"""
-refOffsets = [(65,30),(55,25),(45,25),(45,20)]
-    
-refP = [380, 320, 280, 260]
-refAngles = [80,-10,45,-45]
-
-"""
-#cam 2
-refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
-            [(-55,-25),(-55,25),(55,25),(55,-25)],
-            [(-45,-20),(-45,20),(45,20),(45,-20)]]
-refOffsets = [(65,30),(55,25),(45,20)]
-    
-refP = [380, 320, 260]
-refAngles = [-60,-30,30,60]
-"""
 """
 inputDir = "/home/adeykin/projects/parking/115000004/901000012"
 outputDir = "/home/adeykin/projects/parking/115000004/images/2/marked"
@@ -50,15 +23,17 @@ inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
 outputDir = "/home/adeykin/projects/parking/115000004/images/1/marked"
 listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
 outListPath = "/home/adeykin/projects/parking/115000004/images/1/outList.txt"
+paramsPath = "/home/adeykin/projects/parking/115000004/images/1/params.txt"
 
 # TODO
-# 1) save cropts as coords
 # 3) args
 #    inputList, outputList, algorithm, metadata
 
 parser = markParser.MarkParser()
 parser.load(listPath)
 outParser = markParser.MarkParser()
+
+refRects, refP, refAngles = common.loadParams(paramsPath)
 
 for mark in parser.marks:
     refLocalPoligons = []

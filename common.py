@@ -75,3 +75,31 @@ def extractCrop(img, poligonOld, size):
     #crop = cv2.perspectiveTransform(img, T)
     crop = cv2.warpPerspective(img, T, size)
     return crop
+
+def loadParams(fileName):
+    file = open(fileName, 'r')
+    lineRects = file.readline()
+    lineAngles = file.readline()
+    
+    #parse rects
+    rectsSides = lineRects.split(' ')
+    assert(len(rectsSides) % 2 == 0 )
+    rects = []
+    perims = []
+    for i in range(len(rectsSides)/2):
+        s1, s2 = rectsSides[i*2:i*2+2]
+        s1, s2 = int(s1),int(s2)
+        rect = np.asarray([(-s1,-s2),(-s1,s2),(s1,s2),(s1,-s2)])
+        rects.append(rect)
+        
+        #compute perim
+        perim = sum(linesLengths(rect))
+        perims.append(perim)    
+
+    #parse angles
+    angles = lineAngles.split(' ')
+    angles = map(int, angles)
+    
+    
+    
+    return rects, perims, angles

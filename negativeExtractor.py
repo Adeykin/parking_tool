@@ -13,28 +13,6 @@ from matplotlib.testing.compare import crop_to_same
 import common
 import markParser
 
-# cam 1
-refRects = [np.asarray([(-65,-30),(-65,30),(65,30),(65,-30)]),
-            np.asarray([(-55,-25),(-55,25),(55,25),(55,-25)]),
-            np.asarray([(-45,-25),(-45,25),(45,25),(45,-25)]),
-            np.asarray([(-45,-20),(-45,20),(45,20),(45,-20)])]
-refOffsets = [(65,30),(55,25),(45,25),(45,20)]
-    
-refP = [380, 320, 280, 260]
-refAngles = [80,-10,45,-45]
-
-"""
-#cam 2
-refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
-            [(-55,-25),(-55,25),(55,25),(55,-25)],
-            [(-45,-20),(-45,20),(45,20),(45,-20)]]
-refOffsets = [(65,30),(55,25),(45,20)]
-    
-refP = [380, 320, 260]
-refAngles = [-60,-30,30,60]
-"""
-
-#===========================================================================================
 """
 inputDir = "/home/adeykin/projects/parking/115000004/901000012"
 outputDir = "/home/adeykin/projects/parking/115000004/images/2/negative"
@@ -43,12 +21,15 @@ listPath = "/home/adeykin/projects/parking/115000004/images/2/list.txt"
 inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
 listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
 outListPath = "/home/adeykin/projects/parking/115000004/images/1/negative1.txt"
+paramsPath = "/home/adeykin/projects/parking/115000004/images/1/params.txt"
 
 listFile = open(listPath, 'r')
 
 parser = markParser.MarkParser()
 parser.load(listPath)
 outParser = markParser.MarkParser()
+
+refRects, refP, refAngles = common.loadParams(paramsPath)
 
 negativeNum = 800
 
