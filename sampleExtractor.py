@@ -10,14 +10,20 @@ import os.path
 from matplotlib.testing.compare import crop_to_same
 import common
 import markParser
-from negativeExtractor import refLocalPoligons
-
+#from detector import trPoligon
 
 # cam 1
-refRects = [[(-65,-30),(-65,30),(65,30),(65,-30)],
-            [(-55,-25),(-55,25),(55,25),(55,-25)],
-            [(-45,-25),(-45,25),(45,25),(45,-25)],
-            [(-45,-20),(-45,20),(45,20),(45,-20)]]
+
+refRects = [np.asarray([(-65,-30),(-65,30),(65,30),(65,-30)]),
+            np.asarray([(-55,-25),(-55,25),(55,25),(55,-25)]),
+            np.asarray([(-45,-25),(-45,25),(45,25),(45,-25)]),
+            np.asarray([(-45,-20),(-45,20),(45,20),(45,-20)])]
+"""
+refRects = [np.asarray([(-30,-65),(-30,65),(30,65),(30,-65)]),
+            np.asarray([(-25,-55),(-25,55),(25,55),(25,-55)]),
+            np.asarray([(-25,-45),(-25,45),(25,45),(25,-45)]),
+            np.asarray([(-25,-40),(-25,40),(25,40),(25,-40)])]
+"""
 refOffsets = [(65,30),(55,25),(45,25),(45,20)]
     
 refP = [380, 320, 280, 260]
@@ -47,7 +53,6 @@ outListPath = "/home/adeykin/projects/parking/115000004/images/1/outList.txt"
 
 # TODO
 # 1) save cropts as coords
-# 2) migrate to numpy
 # 3) args
 #    inputList, outputList, algorithm, metadata
 
@@ -57,27 +62,19 @@ outParser = markParser.MarkParser()
 
 for mark in parser.marks:
     refLocalPoligons = []
-    for poligon in mark.poligons:
-        
-        lengths = common.linesLengths(poligon)
-        idx = sorted(range(len(lengths)),key=lengths.__getitem__)
-        longLine1 = common.getLine(poligon, idx[2])
-        longLine2 = common.getLine(poligon, idx[3])
+    for poligon in mark.poligons:        
+        longLine1, longLine2 = common.getLongLines(poligon)
         angle = np.mean([common.getAngle(longLine1), common.getAngle(longLine2)])
         qAngle = min(refAngles, key=lambda x:abs(x-angle))
-        meanCoord = ( np.array(poligon)[:,0].mean(), np.array(poligon)[:,1].mean() )
+        meanCoord = poligon.mean(axis=0)
 
-        perim = sum(lengths)
+        perim = common.perim(poligon)
         rectIndex = refP.index( min(refP, key=lambda x:abs(x-perim)) )
-        refPoligon = refRects[rectIndex]
-        #refOffset = refOffsets[rectIndex]        
-        
-        refPoligonTr = []
-        for point in refPoligon:
-            rotPoint = common.rotateVector(qAngle, point[0], point[1])
-            trPoint = (int(rotPoint[0]+meanCoord[0]),int(rotPoint[1]+meanCoord[1]))
-            refPoligonTr.append(trPoint)
-            
+        refPoligon = refRects[rectIndex]        
+
+        refPoligonTr = common.rotate(refPoligon, qAngle)
+        refPoligonTr = common.transpose(refPoligonTr, meanCoord)
+
         refLocalPoligons.append(refPoligonTr)
         
     outParser.marks.append( markParser.Mark(mark.imageName, refLocalPoligons) )

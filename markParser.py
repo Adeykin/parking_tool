@@ -1,3 +1,4 @@
+import numpy as np
 
 class Mark:
     def __init__(self, imageName, poligons):
@@ -20,10 +21,7 @@ class MarkParser:
             localPoligons = []
             for i in range(number):
                 offset = i*8;
-                poligon = [(lineArr[offset+0], lineArr[offset+1]),
-                           (lineArr[offset+2], lineArr[offset+3]),
-                           (lineArr[offset+4], lineArr[offset+5]),
-                           (lineArr[offset+6], lineArr[offset+7])]
+                poligon = np.asarray(lineArr[offset:offset+8]).reshape(4,2)
                 localPoligons.append(poligon)
             self.marks.append( Mark(imgName, localPoligons) )
     
@@ -32,9 +30,8 @@ class MarkParser:
         for mark in self.marks:
             cells = []
             cells.append(mark.imageName)
-            for pol in mark.poligons:
-                for point in pol:
-                    cells += map(str, list(point))
+            for poligon in mark.poligons:
+                cells += poligon.reshape(1,8).astype(dtype=int).astype(dtype='str').tolist()[0]
             line = " ".join(cells)
             listFile.write( line + '\n' )
                     

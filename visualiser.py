@@ -18,7 +18,6 @@ outputDir = "/home/adeykin/projects/parking/115000004/images/1/marked"
 listPath = "/home/adeykin/projects/parking/115000004/images/1/outList.txt"
 
 # TODO:
-# 1) migrate to numpy
 # 2) args
 #    inputList*
 
@@ -28,7 +27,8 @@ parser.load(listPath)
 for mark in parser.marks:
     img = cv2.imread(inputDir + '/' + mark.imageName)    
     common.drawPoligons(img, mark.poligons, (255,0,0))
-    #common.drawAngles(img, refLocalCentres, refLocalAngles)
-    #common.drawPoligons(img, refLocalPoligons)
     cv2.imshow('hello', img)
-    cv2.waitKey()
+    k = cv2.waitKey(0)
+    if k == ord('q'):
+        cv2.destroyAllWindows()
+        quit()
