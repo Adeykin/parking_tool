@@ -22,6 +22,8 @@ def getLongLines(poligon):
 
 def getAngle(line):
     line = line[1] - line[0]
+    if line[0] == 0:
+        return 90
     angle = np.arctan( float(line[1])/line[0] )
     angle = angle * 180 / np.pi
     return angle
@@ -41,28 +43,10 @@ def transpose(poligon, value):
     assert( poligon.shape[1] == 2 )
     assert( value.shape == (2,) )
     return poligon + np.tile(value, poligon.shape[0]).reshape(poligon.shape[0], 2)
-"""
-def scale(poligon, value):
-    assert( poligon.shape[1] == 2 )
-    assert( value.shape == 2,1)
-    return poligon .* np.tile(value, poligon.shape[0]).reshape(poligon.shape[0], 2)
-"""
+
 def drawPoligons(img, poligons, color = (255,255,255)):
     for poligon in poligons:
         cv2.polylines(img, [poligon.reshape((-1,1,2))], True, color)
-
-"""
-def drawAngles(img, refLocalCentres, refLocalAngles):
-    for i in range(len(refLocalAngles)):
-        center = refLocalCentres[i]
-        angle = refLocalAngles[i]
-        vec = rotateVector(angle)
-        vec = (vec[0]*50, vec[1]*50)
-        center = np.array(center).astype(int)
-        vec = np.array(vec).astype(int)
-        end = center+vec
-        cv2.line(img, (center[0], center[1]), (end[0], end[1]), (0,255,0))
-"""
 
 def extractCrop(img, poligonOld, size):
     poligon = np.asarray(poligonOld, dtype=np.float32)
