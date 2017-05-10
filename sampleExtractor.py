@@ -67,15 +67,8 @@ for mark in parser.marks:
         if not imgPolygonShapely.contains(refPoligonTrShapely):
             continue
 
-        if masked:
-            cropH,cropW = 10,10
-            cropSizeMat = np.asarray( [(0,0),(cropH,0),(cropH,cropW),(0,cropW)], dtype=np.float32 )
-            T = cv2.getPerspectiveTransform(refPoligonTr.astype(dtype='float32'), cropSizeMat)
-            
-            crop = cv2.warpPerspective(mask, T, (cropH, cropW))
-            whitePart = float(cv2.countNonZero(crop)) / 100
-            if whitePart < 0.9:
-                continue
+        if masked and not common.checkMaskContains(mask, refPoligonTr):
+            continue
         
         refLocalPoligons.append(refPoligonTr)
         

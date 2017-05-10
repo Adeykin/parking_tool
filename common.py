@@ -47,6 +47,15 @@ def transpose(poligon, value):
 def drawPoligons(img, poligons, color = (255,255,255)):
     for poligon in poligons:
         cv2.polylines(img, [poligon.reshape((-1,1,2))], True, color)
+        
+def checkMaskContains(mask, poligon):
+    cropH,cropW = 10,10
+    cropSizeMat = np.asarray( [(0,0),(cropH,0),(cropH,cropW),(0,cropW)], dtype=np.float32 )
+    T = cv2.getPerspectiveTransform(poligon.astype(dtype='float32'), cropSizeMat)
+    
+    crop = cv2.warpPerspective(mask, T, (cropH, cropW))
+    whitePart = float(cv2.countNonZero(crop)) / 100
+    return whitePart >= 0.9
 
 def extractCrop(img, poligonOld, size):
     poligon = np.asarray(poligonOld, dtype=np.float32)
