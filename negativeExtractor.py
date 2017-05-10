@@ -17,11 +17,21 @@ import markParser
 inputDir = "/home/adeykin/projects/parking/115000004/901000012"
 outputDir = "/home/adeykin/projects/parking/115000004/images/2/negative"
 listPath = "/home/adeykin/projects/parking/115000004/images/2/list.txt"
-"""
+
 inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
 listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
 outListPath = "/home/adeykin/projects/parking/115000004/images/1/negative1.txt"
 paramsPath = "/home/adeykin/projects/parking/115000004/images/1/params.txt"
+"""
+
+inputDir = "/home/adeykin/projects/parking/data/115000004/901000011_9"
+listPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/listF.txt"
+outListPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/negative.txt"
+paramsPath = "/home/adeykin/projects/parking/data/115000004/params11.txt"
+maskPath = "/home/adeykin/projects/parking/data/115000004/mask11_small.png"
+masked = True
+
+mask = cv2.imread(maskPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
 
 listFile = open(listPath, 'r')
 
@@ -69,9 +79,14 @@ for mark in parser.marks:
             if shapelyPoligon.intersects(negPolygonShapely):
                 noCollisions = False
         
+        if masked and not common.checkMaskContains(mask, negPoligon):
+            noCollisions = False
+        
         if noCollisions:
             refLocalPoligons.append(negPoligon)
             
-    outParser.marks.append( markParser.Mark(mark.imageName, refLocalPoligons) )
+        
+    if len(refLocalPoligons) > 0:
+        outParser.marks.append( markParser.Mark(mark.imageName, refLocalPoligons) )
     
 outParser.save(outListPath)
