@@ -1,4 +1,5 @@
 import numpy as np
+import common
 
 class Mark:
     def __init__(self, imageName, poligons):
@@ -8,7 +9,7 @@ class Mark:
 class MarkParser:
     def __init__(self):
         self.marks = []
-        
+
     def load(self, file):
         self.marks = []
         listFile = open(file, 'r')
@@ -22,6 +23,12 @@ class MarkParser:
             for i in range(number):
                 offset = i*8;
                 poligon = np.asarray(lineArr[offset:offset+8]).reshape(4,2)
+                
+                #detecting triangle
+                lines = common.linesLengths(poligon.astype(dtype=int))
+                if 0 in lines:
+                    print "triangle"
+                
                 localPoligons.append(poligon)
             self.marks.append( Mark(imgName, localPoligons) )
     
