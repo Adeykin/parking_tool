@@ -4,6 +4,7 @@ Input: Images, list.txt
 Output: original poligons, approximated poligons, orientation estimation
 """
 
+import sys, os
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,14 +12,16 @@ import cv2
 import common
 import markParser
 
-print "hello"
+if len(sys.argv) != 2:
+    print "USAGE: python visualiser.py <listFile>"
+    print "\t <listFile> - path to list.txt file with labels"
+    quit()
 
-inputDir = "/home/adeykin/projects/parking/data/115000004/901000011_9"
-listPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/listSmall.txt"
+listPath = sys.argv[1]
+inputDir = os.path.dirname(listPath)
 
-# TODO:
-# 2) args
-#    inputList*
+print 'listFile: ' + listPath
+print 'inputDir: ' + inputDir
 
 parser = markParser.MarkParser()
 parser.load(listPath)

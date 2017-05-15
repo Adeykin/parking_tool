@@ -2,34 +2,38 @@
 Description: extract negative examples from images
 """
 
+import os, sys
 from shapely.geometry import Polygon
 import math
 import numpy as np
-import matplotlib.pyplot as plt
 import cv2
-import os.path
 import random
-from matplotlib.testing.compare import crop_to_same
 import common
 import markParser
 
-"""
-inputDir = "/home/adeykin/projects/parking/115000004/901000012"
-outputDir = "/home/adeykin/projects/parking/115000004/images/2/negative"
-listPath = "/home/adeykin/projects/parking/115000004/images/2/list.txt"
+if len(sys.argv) < 4:
+    print "USAGE: python sampleExtracotr.py <listFile> <outListFile> <paramsFile> [<maskFile>]"
+    print "\t <listFile> - path to list.txt file with labels"
+    print "\t <outListFile> - path to list.txt which will contain crops"
+    print "\t <paramsFile> - file with camera params"
+    print "\t <maskFile> - binary image with mask (optional)"    
+    quit()
 
-inputDir = "/home/adeykin/projects/parking/115000004/901000011_crop"
-listPath = "/home/adeykin/projects/parking/115000004/images/1/list.txt"
-outListPath = "/home/adeykin/projects/parking/115000004/images/1/negative1.txt"
-paramsPath = "/home/adeykin/projects/parking/115000004/images/1/params.txt"
-"""
+listPath = sys.argv[1]
+inputDir = os.path.dirname(listPath)
+outListPath = sys.argv[2]
+paramsPath = sys.argv[3]
+masked = False
+if len(sys.argv) == 5:
+    maskPath = sys.argv[4]
+    masked = True
 
-inputDir = "/home/adeykin/projects/parking/data/115000004/901000011_9"
-listPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/listF.txt"
-outListPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/negative.txt"
-paramsPath = "/home/adeykin/projects/parking/data/115000004/params11.txt"
-maskPath = "/home/adeykin/projects/parking/data/115000004/mask11_small.png"
-masked = True
+print 'listFile: ' + listPath
+print 'outListFile: ' + outListPath
+print 'params: ' + paramsPath
+print 'masked: ' + masked
+if masked:
+    print 'maskPath: ' + maskPath
 
 mask = cv2.imread(maskPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
 
@@ -41,7 +45,7 @@ outParser = markParser.MarkParser()
 
 refRects, refP, refAngles = common.loadParams(paramsPath)
 
-negativeNum = 800
+negativeNum = 300
 
 for mark in parser.marks:
     img = cv2.imread(inputDir + '/' + mark.imageName, cv2.CV_LOAD_IMAGE_GRAYSCALE)

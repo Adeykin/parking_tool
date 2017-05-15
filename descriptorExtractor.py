@@ -2,17 +2,26 @@
 Descriontion: Extract descriptors from examples and save it to .csv file
 """
 
+import os, sys
 import csv
 import math
 import numpy as np
 import cv2
-import os.path
 import common
 import markParser
 
-inputDir = "/home/adeykin/projects/parking/data/115000004/901000011_9"
-listPath = "/home/adeykin/projects/parking/data/115000004/901000011_9/positiveSmallMasked.txt"
-output = "/home/adeykin/projects/parking/data/115000004/901000011_9/positiveSmallMasked.csv"
+if len(sys.argv) != 2:
+    print "USAGE: python visualiser.py <listFilePath>"
+    print "\t <listFilePath> - path to list.txt file with labels"
+    quit()
+
+listPath = sys.argv[1]
+inputDir = os.path.dirname(listPath)
+path, ext = os.path.splitext(listPath)
+output = inputDir + '/' + os.path.basename(path) + '.csv'
+
+print 'inputFile:  ' + listPath
+print 'outputFIle: ' + output
 
 f = open(output, 'w')
 spamwriter = csv.writer(f, delimiter=';')
